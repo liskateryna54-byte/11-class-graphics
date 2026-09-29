@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Характеристики зображення та засоби його відтворення</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --primary-dark: #357ABD;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --text-light: #666666;
+            --correct: #4CAF50;
+            --correct-bg: #E8F5E9;
+            --wrong: #F44336;
+            --wrong-bg: #FFEBEE;
+            --border-radius: 12px;
+            --shadow: 0 8px 20px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffffff;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+
+        .student-info {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border-top: 5px solid var(--primary);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        @media(min-width: 600px) {
+            .input-group {
+                flex-direction: row;
+            }
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .progress-bar-container {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            border: 1px solid #e0eaff;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #ffffff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            margin: 30px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .choice-btn {
+            background: #f9f9f9;
+            border: 2px solid #eeeeee;
+            border-radius: 8px;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-main);
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            border-color: #b3d4fc;
+            background: #f0f7ff;
+        }
+
+        .choice-btn.selected-choice {
+            border-color: var(--primary);
+            background: #e3f2fd;
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .choice-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .dnd-instruction {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .chip-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            min-height: 50px;
+        }
+
+        .chip {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary-dark);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .chip.selected {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
+        }
+
+        .drop-zone {
+            display: inline-block;
+            min-width: 120px;
+            height: 35px;
+            border: 2px dashed var(--primary);
+            border-radius: 6px;
+            vertical-align: middle;
+            margin: 0 5px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 31px;
+            font-weight: bold;
+            background: #f0f7ff;
+            color: var(--primary-dark);
+        }
+
+        .drop-zone.filled {
+            border-style: solid;
+            background: #e3f2fd;
+        }
+
+        .check-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .check-btn:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .check-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .correct {
+            background-color: var(--correct-bg) !important;
+            border-color: var(--correct) !important;
+            color: #2e7d32 !important;
+            opacity: 1 !important;
+        }
+
+        .wrong {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            background-color: var(--wrong-bg) !important;
+            border-color: var(--wrong) !important;
+            color: #c62828 !important;
+            opacity: 1 !important;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .submit-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .btn-main {
+            background: #333333;
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        .btn-main:hover {
+            background: #111111;
+            transform: translateY(-2px);
+        }
+
+        #final-report {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-top: 5px solid var(--primary);
+            margin-bottom: 50px;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin: 10px 0;
+        }
+
+        .motivation {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .security-info {
+            background: #f0f7ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .security-info p { margin-bottom: 5px; }
+
+        .report-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .locked-mode {
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        @media print {
+            body { background: white; color: black; }
+            .submit-container, .report-actions, .progress-bar-container, .check-btn { display: none; }
+            .question-card, .student-info { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; margin-bottom: 15px; padding: 15px;}
+            .section-title { color: black; border-bottom: 2px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Характеристики зображення та засоби його відтворення</h1>
+    </header>
+
+    <div class="student-info" id="student-block">
+        <div class="input-group">
+            <input type="text" id="student-surname" placeholder="Прізвище" required>
+            <input type="text" id="student-name" placeholder="Ім'я" required>
+        </div>
+    </div>
+
+    <div class="progress-bar-container">
+        <span id="progress-text">Виконано питань: 0 з 12</span>
+    </div>
+
+    <div id="test-content">
+        <!-- Розділ 1 -->
+        <h2 class="section-title">Розділ 1: Види комп'ютерної графіки та особливості растра</h2>
+        
+        <div class="question-card">
+            <div class="question-text">1. Який вид комп'ютерної графіки нагадує мозаїку і будується з окремих точок (пікселів) одного розміру, кожен з яких має власний колір і яскравість?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(0, this, false)">А) Векторна графіка</button>
+                <button class="choice-btn" onclick="selectChoice(0, this, true)">Б) Растрова графіка</button>
+                <button class="choice-btn" onclick="selectChoice(0, this, false)">В) Фрактальна графіка</button>
+                <button class="choice-btn" onclick="selectChoice(0, this, false)">Г) Тривимірна (3D) графіка</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(0, this)">Перевірити</button>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">2. Заповніть пропуск у реченні:</div>
+            <div class="dnd-instruction">☝️ Натисніть на варіант у рамці, а потім натисніть на порожнє місце. Після цього натисніть "Перевірити".</div>
+            <div class="chip-bank" id="bank-q1">
+                <div class="chip" data-val="1" onclick="selectChip(this)">Растрова графіка</div>
+                <div class="chip" data-val="2" onclick="selectChip(this)">Векторна графіка</div>
+                <div class="chip" data-val="3" onclick="selectChip(this)">Фрактальна графіка</div>
+                <div class="chip" data-val="4" onclick="selectChip(this)">Тривимірна графіка</div>
+            </div>
+            <div class="question-text" style="font-weight: normal; margin-bottom: 20px;">
+                Вид комп'ютерної графіки, що будується за допомогою математичних алгоритмів та формул, завдяки чому її файли мають найменший об'єм пам'яті — це <span class="drop-zone" onclick="placeChip(1, this, '3')">...</span>.
+            </div>
+            <button class="check-btn" onclick="checkAnswer(1, this)">Перевірити</button>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">3. У яких галузях найчастіше застосовують векторну графіку завдяки можливості збереження чітких і ясних контурів?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(2, this, false)">А) Передача фотографічних напівтонів і цифрових фото</button>
+                <button class="choice-btn" onclick="selectChoice(2, this, true)">Б) Картографія, створення логотипів, схем та інженерна графіка</button>
+                <button class="choice-btn" onclick="selectChoice(2, this, false)">В) Комп'ютерна томографія та медична візуалізація</button>
+                <button class="choice-btn" onclick="selectChoice(2, this, false)">Г) Автоматична генерація мозаїчних малюнків</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(2, this)">Перевірити</button>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">4. Що відбувається з растровим зображенням під час його суттєвого збільшення (масштабування)?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(3, this, false)">А) Чіткість контурів автоматично підвищується</button>
+                <button class="choice-btn" onclick="selectChoice(3, this, false)">Б) Зображення зникає та вимагає повторного цифрування</button>
+                <button class="choice-btn" onclick="selectChoice(3, this, true)">В) Спостерігається пікселізація (з'являються «сходинки» на контурах)</button>
+                <button class="choice-btn" onclick="selectChoice(3, this, false)">Г) Автоматично зменшується глибина кольору</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(3, this)">Перевірити</button>
+        </div>
+
+        <!-- Розділ 2 -->
+        <h2 class="section-title">Розділ 2: Характеристики растрового зображення</h2>
+
+        <div class="question-card">
+            <div class="question-text">5. Яка властивість растрового зображення визначає кількість бітів, що використовуються для кодування кольору одного пікселя?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(4, this, false)">А) Роздільна здатність</button>
+                <button class="choice-btn" onclick="selectChoice(4, this, false)">Б) Розмір зображення в пікселях</button>
+                <button class="choice-btn" onclick="selectChoice(4, this, true)">В) Глибина кольору (вимірюється в bpp)</button>
+                <button class="choice-btn" onclick="selectChoice(4, this, false)">Г) Оптична щільність носія</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(4, this)">Перевірити</button>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">6. Яку роздільну здатність у dpi рекомендовано встановлювати для якісного друку зображення на поліграфії чи принтері?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(5, this, false)">А) Не менше 72 dpi</button>
+                <button class="choice-btn" onclick="selectChoice(5, this, false)">Б) Не менше 96 dpi</button>
+                <button class="choice-btn" onclick="selectChoice(5, this, true)">В) Не менше 300 dpi</button>
+                <button class="choice-btn" onclick="selectChoice(5, this, false)">Г) Рівно 1200 dpi</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(5, this)">Перевірити</button>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">7. Скільки кольорів дозволяє максимально відтворити 24-бітна глибина кольору у повнокольорових растрових зображеннях?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(6, this, false)">А) 2 кольори</button>
+                <button class="choice-btn" onclick="selectChoice(6, this, false)">Б) 256 кольорів</button>
+                <button class="choice-btn" onclick="selectChoice(6, this, true)">В) Близько 16,7 млн кольорів</button>
+                <button class="choice-btn" onclick="selectChoice(6, this, false)">Г) Понад 1 мільярд кольорів</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(6, this)">Перевірити</button>
+        </div>
+
+        <!-- Розділ 3 -->
+        <h2 class="section-title">Розділ 3: Колірні моделі</h2>
+
+        <div class="question-card">
+            <div class="question-text">8. Яка колірна модель базується на трьох основних компонентах — червоному, зеленому та синьому — і призначена для відтворення на екранах моніторів?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(7, this, false)">А) CMYK</button>
+                <button class="choice-btn" onclick="selectChoice(7, this, true)">Б) RGB</button>
+                <button class="choice-btn" onclick="selectChoice(7, this, false)">В) HSB</button>
+                <button class="choice-btn" onclick="selectChoice(7, this, false)">Г) EPS</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(7, this)">Перевірити</button>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">9. Які чотири базові кольори використовуються в колірній моделі CMYK для підготовки зображень до поліграфічного друку?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(8, this, false)">А) Червоний, зелений, синій, білий</button>
+                <button class="choice-btn" onclick="selectChoice(8, this, true)">Б) Блакитний, пурпуровий, жовтий, чорний</button>
+                <button class="choice-btn" onclick="selectChoice(8, this, false)">В) Відтінок, насиченість, яскравість, контраст</button>
+                <button class="choice-btn" onclick="selectChoice(8, this, false)">Г) Чорний, білий, сірий, сріблястий</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(8, this)">Перевірити</button>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">10. Заповніть пропуск у реченні:</div>
+            <div class="dnd-instruction">☝️ Натисніть на варіант у рамці, а потім натисніть на порожнє місце. Після цього натисніть "Перевірити".</div>
+            <div class="chip-bank" id="bank-q2">
+                <div class="chip" data-val="1" onclick="selectChip(this)">RGB</div>
+                <div class="chip" data-val="2" onclick="selectChip(this)">CMYK</div>
+                <div class="chip" data-val="3" onclick="selectChip(this)">HSB</div>
+                <div class="chip" data-val="4" onclick="selectChip(this)">RAW</div>
+            </div>
+            <div class="question-text" style="font-weight: normal; margin-bottom: 20px;">
+                Колірна модель, яка є найближчою до людського сприйняття і описується трьома параметрами: відтінок, насиченість та яскравість — це <span class="drop-zone" onclick="placeChip(9, this, '3')">...</span>.
+            </div>
+            <button class="check-btn" onclick="checkAnswer(9, this)">Перевірити</button>
+        </div>
+
+        <!-- Розділ 4 -->
+        <h2 class="section-title">Розділ 4: Формати графічних файлів</h2>
+
+        <div class="question-card">
+            <div class="question-text">11. Який графічний формат зберігає необроблені дані безпосередньо з матриці цифрового фотоапарата без втрати інформації?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(10, this, false)">А) BMP</button>
+                <button class="choice-btn" onclick="selectChoice(10, this, false)">Б) GIF</button>
+                <button class="choice-btn" onclick="selectChoice(10, this, false)">В) JPEG</button>
+                <button class="choice-btn" onclick="selectChoice(10, this, true)">Г) RAW</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(10, this)">Перевірити</button>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">12. Який растровий формат використовує алгоритм стиснення Deflate і був створений як вільна заміна формату GIF?</div>
+            <div class="choices">
+                <button class="choice-btn" onclick="selectChoice(11, this, true)">А) PNG</button>
+                <button class="choice-btn" onclick="selectChoice(11, this, false)">Б) TIFF</button>
+                <button class="choice-btn" onclick="selectChoice(11, this, false)">В) EPS</button>
+                <button class="choice-btn" onclick="selectChoice(11, this, false)">Г) PCX</button>
+            </div>
+            <button class="check-btn" onclick="checkAnswer(11, this)">Перевірити</button>
+        </div>
+    </div>
+
+    <div class="submit-container" id="submit-block">
+        <button class="btn-main" onclick="finishTest()">Завершити тест та показати результат</button>
+    </div>
+
+    <!-- Фінальний звіт -->
+    <div id="final-report">
+        <div class="report-header">
+            <h2>Твій результат, <span id="report-name"></span>!</h2>
+            <div class="score-display">Твій бал: <span id="report-score">0</span> з 12</div>
+            <div class="motivation" id="report-motivation"></div>
+        </div>
+        
+        <div class="security-info">
+            <p><strong>🔒 Код верифікації:</strong> <span id="report-code" style="font-family: monospace; font-size:16px; font-weight:bold;"></span></p>
+            <p><strong>👁️ Втрата фокусу (втечі):</strong> <span id="report-escapes">0</span> разів</p>
+        </div>
+
+        <div class="report-actions">
+            <button class="btn-secondary" onclick="window.print()">🖨️ Зберегти у PDF</button>
+            <button class="btn-secondary" onclick="downloadHTML()">💾 Скачати звіт</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const TEST_KEY = "graphics_11_test_final_v3";
+    let escapesCount = 0;
+    let isFinished = false;
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden && !isFinished) {
+            escapesCount++;
+            alert("Увага! Твоя активність поза вікном тесту фіксується системою!");
+        }
+    });
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's')) e.preventDefault();
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) e.preventDefault();
+    });
+
+    const totalQuestions = 12;
+    let qState = Array.from({length: totalQuestions}, () => ({ 
+        completed: false, 
+        score: 0, 
+        selectedElement: null,
+        isCorrect: false,
+        placedChip: null
+    }));
+
+    window.onload = () => {
+        if (localStorage.getItem(TEST_KEY)) {
+            alert("Ти вже проходив цей тест! Завантажуємо збережений результат.");
+            let savedData = JSON.parse(localStorage.getItem(TEST_KEY));
+            document.getElementById('student-name').value = savedData.name;
+            document.getElementById('student-surname').value = savedData.surname;
+            escapesCount = savedData.escapes;
+            qState = savedData.state;
+            forceFinish(savedData.score, savedData.code);
+        }
+    };
+
+    function updateProgress() {
+        let count = qState.filter(q => q.completed).length;
+        document.getElementById('progress-text').innerText = `Виконано питань: ${count} з 12`;
+    }
+
+    function selectChoice(qIndex, btnElement, isCorrect) {
+        if (isFinished || qState[qIndex].completed) return;
+        
+        let siblings = btnElement.parentElement.querySelectorAll('.choice-btn');
+        siblings.forEach(b => b.classList.remove('selected-choice'));
+        
+        btnElement.classList.add('selected-choice');
+        
+        qState[qIndex].selectedElement = btnElement;
+        qState[qIndex].isCorrect = isCorrect;
+    }
+
+    let activeChip = null;
+
+    function selectChip(chipElement) {
+        if (isFinished) return;
+        if (activeChip) activeChip.classList.remove('selected');
+        activeChip = chipElement;
+        chipElement.classList.add('selected');
+    }
+
+    function placeChip(qIndex, dropZone, correctVal) {
+        if (isFinished || qState[qIndex].completed || !activeChip) return;
+
+        if (qState[qIndex].placedChip) {
+            qState[qIndex].placedChip.style.display = 'inline-block';
+        }
+
+        let selectedVal = activeChip.getAttribute('data-val');
+        
+        dropZone.innerText = activeChip.innerText;
+        dropZone.classList.add('filled');
+        
+        qState[qIndex].placedChip = activeChip;
+        qState[qIndex].isCorrect = (selectedVal === correctVal);
+        qState[qIndex].selectedElement = dropZone;
+
+        activeChip.style.display = 'none';
+        activeChip.classList.remove('selected');
+        activeChip = null;
+    }
+
+    function checkAnswer(qIndex, checkBtn) {
+        let q = qState[qIndex];
+        
+        if (q.completed) return;
+        
+        if (!q.selectedElement) {
+            alert("Будь ласка, оберіть варіант відповіді перед перевіркою!");
+            return;
+        }
+
+        q.completed = true;
+        checkBtn.disabled = true;
+
+        if (q.isCorrect) {
+            q.score = 1;
+            q.selectedElement.classList.add('correct');
+            q.selectedElement.classList.remove('selected-choice');
+        } else {
+            q.score = 0;
+            q.selectedElement.classList.add('wrong');
+            q.selectedElement.classList.remove('selected-choice');
+        }
+
+        let card = checkBtn.closest('.question-card');
+        
+        let choices = card.querySelectorAll('.choice-btn');
+        choices.forEach(btn => btn.disabled = true);
+        
+        let chips = card.querySelectorAll('.chip');
+        chips.forEach(chip => chip.style.pointerEvents = 'none');
+        
+        let dropZones = card.querySelectorAll('.drop-zone');
+        dropZones.forEach(dz => dz.style.pointerEvents = 'none');
+
+        updateProgress();
+    }
+
+    function finishTest() {
+        let nameInput = document.getElementById('student-name').value.trim();
+        let surnameInput = document.getElementById('student-surname').value.trim();
+
+        if (!nameInput || !surnameInput) {
+            alert("Будь ласка, вкажи своє Ім'я та Прізвище на початку сторінки!");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        qState.forEach((q, idx) => {
+            if (!q.completed) {
+                q.completed = true;
+                q.score = 0;
+                let buttons = document.querySelectorAll('.check-btn');
+                if(buttons[idx]) buttons[idx].disabled = true;
+            }
+        });
+
+        let totalScore = qState.reduce((sum, q) => sum + q.score, 0);
+        let fullName = `${surnameInput} ${nameInput}`;
+        
+        let rawString = encodeURIComponent(fullName + totalScore + "graphic11");
+        let verifyCode = btoa(rawString).slice(0, 8).toUpperCase();
+
+        let saveData = {
+            name: nameInput,
+            surname: surnameInput,
+            score: totalScore,
+            code: verifyCode,
+            escapes: escapesCount,
+            state: qState
+        };
+        localStorage.setItem(TEST_KEY, JSON.stringify(saveData));
+
+        forceFinish(totalScore, verifyCode, fullName);
+    }
+
+    function forceFinish(totalScore, code, fullNameFallback = "") {
+        isFinished = true;
+        
+        let name = document.getElementById('student-name').value || JSON.parse(localStorage.getItem(TEST_KEY)).name;
+        let surname = document.getElementById('student-surname').value || JSON.parse(localStorage.getItem(TEST_KEY)).surname;
+        let fullName = fullNameFallback || `${surname} ${name}`;
+
+        document.getElementById('test-content').classList.add('locked-mode');
+        document.getElementById('student-block').classList.add('locked-mode');
+        document.getElementById('submit-block').style.display = 'none';
+        
+        document.getElementById('report-name').innerText = fullName;
+        document.getElementById('report-score').innerText = totalScore;
+        document.getElementById('report-code').innerText = code;
+        document.getElementById('report-escapes').innerText = escapesCount;
+
+        let motText = "";
+        if (totalScore >= 11) motText = "Відмінна робота! Матеріал засвоєно чудово. 🌟";
+        else if (totalScore >= 8) motText = "Добре! Ти маєш міцні знання з теми. 👍";
+        else if (totalScore >= 5) motText = "Непогано, але варто ще раз повторити основні поняття. 📚";
+        else motText = "Потрібно більше практики. Обов'язково переглянь матеріали теми ще раз! 💪";
+        document.getElementById('report-motivation').innerText = motText;
+
+        let report = document.getElementById('final-report');
+        report.style.display = 'block';
+        setTimeout(() => {
+            report.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }, 300);
+    }
+
+    function downloadHTML() {
+        let content = document.documentElement.outerHTML;
+        let blob = new Blob([content], {type: 'text/html'});
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'graphics_test_result.html';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+</body>
+</html>
